@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Environment files - these hold the MongoDB connection string, the JWT secret
+# and the Razorpay Key Secret. None of them may ever be committed.
+#
+# .env.example is deliberately excluded from the ignore so the required
+# variable names stay documented in the repository.
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+dist-ssr/
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor and OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+backend/.env

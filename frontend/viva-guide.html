@@ -1,0 +1,1380 @@
+<title>ShopKart Frontend Viva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    --ground:      #F2F5F6;
+    --surface:     #FFFFFF;
+    --surface-alt: #E9EEF0;
+    --ink:         #11171A;
+    --ink-soft:    #3D4C53;
+    --muted:       #63757D;
+    --rule:        #D3DDE0;
+    --accent:      #0A6B73;
+    --accent-soft: #DDEDEE;
+    --warn:        #96430F;
+    --warn-soft:   #F7E8DC;
+    --ok:          #2C6B3F;
+    --ok-soft:     #E1EFE4;
+
+    --radius: 4px;
+    --measure: 68ch;
+
+    --step--1: 0.8125rem;
+    --step-0:  1rem;
+    --step-1:  1.1875rem;
+    --step-2:  1.5rem;
+    --step-3:  2rem;
+    --step-4:  2.75rem;
+
+    --sans:  "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    --serif: "IBM Plex Serif", ui-serif, Georgia, serif;
+    --mono:  "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0D1214;
+      --surface:     #151C1F;
+      --surface-alt: #1D262A;
+      --ink:         #E4EDEF;
+      --ink-soft:    #B8C7CC;
+      --muted:       #8B9CA3;
+      --rule:        #2A363A;
+      --accent:      #52C3CB;
+      --accent-soft: #123236;
+      --warn:        #E5A365;
+      --warn-soft:   #33220F;
+      --ok:          #7FCB95;
+      --ok-soft:     #142C1C;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0D1214;
+    --surface:     #151C1F;
+    --surface-alt: #1D262A;
+    --ink:         #E4EDEF;
+    --ink-soft:    #B8C7CC;
+    --muted:       #8B9CA3;
+    --rule:        #2A363A;
+    --accent:      #52C3CB;
+    --accent-soft: #123236;
+    --warn:        #E5A365;
+    --warn-soft:   #33220F;
+    --ok:          #7FCB95;
+    --ok-soft:     #142C1C;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: var(--step-0);
+    line-height: 1.65;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0 3rem;
+    max-width: 76rem;
+    margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+  }
+
+  @media (min-width: 62rem) {
+    .page { grid-template-columns: 14rem minmax(0, 1fr); }
+  }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    grid-column: 1 / -1;
+    border-bottom: 2px solid var(--ink);
+    padding: 3.5rem 0 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-family: var(--sans);
+    font-size: clamp(2rem, 6vw, var(--step-4));
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    font-size: var(--step-1);
+    color: var(--ink-soft);
+    max-width: var(--measure);
+    margin: 0 0 1.75rem;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .chips li {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-soft);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 0.2rem 0.5rem;
+  }
+
+  /* ---------- table of contents ---------- */
+
+  .toc { display: none; }
+
+  @media (min-width: 62rem) {
+    .toc {
+      display: block;
+      align-self: start;
+      position: sticky;
+      top: 1.5rem;
+    }
+    .toc h2 {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+      margin: 0 0 0.85rem;
+      padding: 0;
+      border: 0;
+    }
+    .toc ol {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      counter-reset: toc;
+    }
+    .toc a {
+      font-family: var(--sans);
+      font-size: 0.875rem;
+      color: var(--ink-soft);
+      text-decoration: none;
+      display: grid;
+      grid-template-columns: 1.5rem 1fr;
+      gap: 0.25rem;
+      line-height: 1.35;
+    }
+    .toc a::before {
+      counter-increment: toc;
+      content: counter(toc);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .toc a:hover { color: var(--accent); }
+    .toc a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
+
+  main { min-width: 0; }
+
+  /* ---------- sections ---------- */
+
+  section { margin-bottom: 3.5rem; scroll-margin-top: 1.5rem; }
+
+  h2 {
+    font-family: var(--sans);
+    font-size: var(--step-2);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    text-wrap: balance;
+    margin: 0 0 0.35rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  h3 {
+    font-family: var(--sans);
+    font-size: var(--step-1);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 2.25rem 0 0.6rem;
+    text-wrap: balance;
+  }
+
+  h4 {
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 1.75rem 0 0.5rem;
+  }
+
+  p, ul, ol { max-width: var(--measure); }
+  p { margin: 0 0 1rem; }
+
+  ul, ol { padding-left: 1.25rem; margin: 0 0 1rem; }
+  li { margin-bottom: 0.35rem; }
+  li > ul, li > ol { margin-top: 0.35rem; }
+
+  a { color: var(--accent); }
+
+  strong { font-weight: 600; color: var(--ink); }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.875em;
+    background: var(--surface-alt);
+    border-radius: 3px;
+    padding: 0.1em 0.32em;
+  }
+
+  .lede { font-size: var(--step-1); color: var(--ink-soft); }
+
+  /* ---------- code blocks ---------- */
+
+  .code {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    margin: 0 0 1.25rem;
+    overflow: hidden;
+  }
+
+  .code-label {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--rule);
+    padding: 0.4rem 0.85rem;
+    letter-spacing: 0.02em;
+  }
+
+  pre {
+    margin: 0;
+    padding: 0.85rem 1rem;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    tab-size: 2;
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+    white-space: pre;
+  }
+
+  .code pre { max-width: none; }
+
+  /* ---------- definition glossary ---------- */
+
+  .defs {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    margin: 0 0 1.5rem;
+  }
+
+  .def {
+    display: grid;
+    gap: 0.15rem 1.5rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  @media (min-width: 44rem) {
+    .def { grid-template-columns: 12rem minmax(0, 1fr); }
+    .def .term { text-align: right; }
+  }
+
+  .def .term {
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1.5;
+    padding-top: 0.12rem;
+  }
+
+  .def .what { max-width: var(--measure); }
+  .def .what p:last-child { margin-bottom: 0; }
+  .def .what p { margin-bottom: 0.6rem; }
+
+  /* ---------- callouts ---------- */
+
+  .note {
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--surface);
+    padding: 0.9rem 1.1rem;
+    margin: 0 0 1.5rem;
+    max-width: var(--measure);
+  }
+
+  .note.warn { border-left-color: var(--warn); background: var(--warn-soft); }
+  .note.ok   { border-left-color: var(--ok);   background: var(--ok-soft); }
+
+  .note-tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.35rem;
+  }
+
+  .note.warn .note-tag { color: var(--warn); }
+  .note.ok .note-tag { color: var(--ok); }
+
+  .note p:last-child { margin-bottom: 0; }
+  .note p { max-width: none; }
+
+  /* ---------- sequence steps ---------- */
+
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+    counter-reset: step;
+    max-width: var(--measure);
+  }
+
+  .steps > li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.9rem;
+    padding-bottom: 0.85rem;
+    margin-bottom: 0.85rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .steps > li:last-child { border-bottom: 0; margin-bottom: 0; padding-bottom: 0; }
+
+  .steps > li::before {
+    content: counter(step, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    padding-top: 0.3rem;
+  }
+
+  .steps p:last-child { margin-bottom: 0; }
+
+  /* ---------- tables ---------- */
+
+  .table-wrap {
+    overflow-x: auto;
+    margin: 0 0 1.5rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: var(--sans);
+    font-size: 0.875rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.85rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+
+  thead th {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--surface-alt);
+    white-space: nowrap;
+  }
+
+  tbody tr:last-child td { border-bottom: 0; }
+  td code { white-space: nowrap; }
+
+  /* ---------- Q&A ---------- */
+
+  .qa { max-width: var(--measure); }
+
+  .qa details {
+    border-bottom: 1px solid var(--rule);
+    padding: 0.15rem 0;
+  }
+
+  .qa summary {
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    padding: 0.65rem 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1.15rem minmax(0, 1fr);
+    gap: 0.5rem;
+    color: var(--ink);
+  }
+
+  .qa summary::-webkit-details-marker { display: none; }
+
+  .qa summary::before {
+    content: "+";
+    font-family: var(--mono);
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1.5;
+  }
+
+  .qa details[open] summary::before { content: "\2212"; }
+
+  .qa summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .qa .answer {
+    padding: 0 0 1rem 1.65rem;
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+  }
+
+  .qa .answer p:last-child { margin-bottom: 0; }
+  .qa .answer p { max-width: none; }
+
+  .footer {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--rule);
+    margin-top: 1rem;
+    padding-top: 1.25rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="eyebrow">Lab Project 4 — Frontend</p>
+    <h1>ShopKart Frontend Viva</h1>
+    <p class="standfirst">Every file, every hook, and the full request lifecycle of a React authentication flow — plus the definitions an examiner will actually ask you to give.</p>
+    <ul class="chips">
+      <li>React 19</li>
+      <li>Vite 8</li>
+      <li>Tailwind CSS 4</li>
+      <li>React Router 7</li>
+      <li>Axios</li>
+      <li>Context API</li>
+      <li>JWT · httpOnly cookie</li>
+    </ul>
+  </header>
+
+  <nav class="toc" aria-label="Contents">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#project">The project</a></li>
+      <li><a href="#concepts">Concepts you must define</a></li>
+      <li><a href="#files">File-by-file breakdown</a></li>
+      <li><a href="#flows">End-to-end workflows</a></li>
+      <li><a href="#gotchas">Weak points &amp; bugs</a></li>
+      <li><a href="#qa">Rapid-fire questions</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <!-- ============ 1. PROJECT ============ -->
+    <section id="project">
+      <h2>1 · The project</h2>
+      <p class="lede">ShopKart is a two-tier application: a React single-page app on port 5173 and an Express + MongoDB API on port 3333. The frontend you are being examined on implements <strong>customer registration, login, session persistence, and route protection</strong> — nothing about carts or products yet. The "ShopKart" name is aspirational; the code is an authentication skeleton.</p>
+
+      <p>The single most important thing to understand before anything else: <strong>the frontend never sees the JWT.</strong> The token lives in an <code>httpOnly</code> cookie, so JavaScript cannot read it. That one decision explains almost every piece of the architecture — why there is a <code>loading</code> flag, why <code>AuthContext</code> calls <code>/me</code> on startup, and why the route guards have to wait.</p>
+
+      <h3>Stack</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Layer</th><th>Tool</th><th>What it does here</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Build / dev server</td><td><code>Vite 8</code></td><td>Serves the app with native ES modules, hot-reloads on save, bundles for production.</td></tr>
+            <tr><td>UI library</td><td><code>React 19</code></td><td>Components, state, the virtual DOM, hooks.</td></tr>
+            <tr><td>JSX transform</td><td><code>@vitejs/plugin-react</code></td><td>Turns JSX into plain JS; provides Fast Refresh.</td></tr>
+            <tr><td>Styling</td><td><code>Tailwind CSS 4</code></td><td>Utility classes in the markup instead of separate stylesheets.</td></tr>
+            <tr><td>Routing</td><td><code>react-router-dom 7</code></td><td>Client-side URL routing with no page reloads.</td></tr>
+            <tr><td>HTTP</td><td><code>axios</code></td><td>One preconfigured instance with a base URL and credentials.</td></tr>
+            <tr><td>Global state</td><td><code>Context API</code></td><td>Shares the logged-in user across components without prop drilling.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>File map</h3>
+      <div class="code">
+        <div class="code-label">frontend/vite-project/</div>
+<pre><code>index.html                  &lt;div id="root"&gt; + loads main.jsx
+vite.config.js              react() + tailwindcss() plugins
+package.json                deps &amp; scripts (dev / build / preview)
+
+src/
+  main.jsx                  entry point — createRoot().render(&lt;App /&gt;)
+  App.jsx                   composition root — Provider + Router + Routes
+  index.css                 @import "tailwindcss"
+
+  context/
+    AuthContext.jsx         the auth brain: user, loading, login, logout
+
+  axiosCalls/
+    axios.js                preconfigured axios instance
+
+  components/
+    Navbar.jsx              app header + Logout button
+    ProtectedRoute.jsx      guard: must be logged in
+    PublicRoute.jsx         guard: must be logged out
+
+  pages/
+    Register.jsx            sign-up form
+    Login.jsx               sign-in form
+    Home.jsx                post-login profile view</code></pre>
+      </div>
+
+      <div class="note">
+        <span class="note-tag">Note</span>
+        <p><code>components/</code> holds pieces that are reused or that wrap other things. <code>pages/</code> holds the three route-level screens. There is no technical difference between them in React — it is purely organisational, and saying so is a good answer if asked.</p>
+      </div>
+    </section>
+
+    <!-- ============ 2. CONCEPTS ============ -->
+    <section id="concepts">
+      <h2>2 · Concepts you must define</h2>
+      <p class="lede">These are the definitions you should be able to give in one breath, without notes.</p>
+
+      <h3>JSX — the question you will definitely be asked</h3>
+
+      <p><strong>Definition:</strong> JSX (JavaScript XML) is a syntax extension for JavaScript that lets you write HTML-like markup directly inside JavaScript code. It is <em>not</em> valid JavaScript and no browser can run it — it must be compiled first.</p>
+
+      <p><strong>What actually happens to it:</strong> Vite's React plugin (via Babel/esbuild) rewrites every JSX expression into a function call that produces a plain JavaScript object — a <em>React element</em>. Modern React uses the automatic JSX runtime, so no <code>React</code> import is needed for the transform itself.</p>
+
+      <div class="code">
+        <div class="code-label">What you write</div>
+<pre><code>const el = &lt;h1 className="title"&gt;Hello {name}&lt;/h1&gt;;</code></pre>
+      </div>
+
+      <div class="code">
+        <div class="code-label">What the compiler produces (roughly)</div>
+<pre><code>const el = jsx("h1", { className: "title", children: ["Hello ", name] });
+
+// → a plain object, not a DOM node:
+// { type: "h1", props: { className: "title", children: [...] } }</code></pre>
+      </div>
+
+      <p><strong>Why JSX instead of plain JavaScript?</strong> Four reasons, and this is the shape the answer should take:</p>
+
+      <ol>
+        <li><strong>Readability.</strong> Building the same UI with <code>React.createElement</code> calls produces deeply nested function calls that are almost impossible to scan. JSX lets you <em>see</em> the structure of the page in the shape of the code.</li>
+        <li><strong>It is still JavaScript.</strong> You keep every language feature: embed expressions with <code>{}</code>, call <code>.map()</code>, use ternaries, variables, and functions. It is markup <em>inside</em> JS, not a separate template language like Angular's or Vue's.</li>
+        <li><strong>Early error detection.</strong> Unclosed tags, mismatched tags, and invalid nesting are caught at compile time with a line number — not silently at runtime in the browser.</li>
+        <li><strong>Safety.</strong> React escapes any value you interpolate with <code>{}</code>. So <code>{userInput}</code> can never inject markup — JSX is XSS-safe by default, unlike string-concatenating HTML or using <code>innerHTML</code>.</li>
+      </ol>
+
+      <h4>JSX rules you must be able to state</h4>
+      <ul>
+        <li><strong>One root element.</strong> A component returns a single element. To return siblings, wrap them in a <code>&lt;div&gt;</code> or an empty fragment <code>&lt;&gt;…&lt;/&gt;</code>.</li>
+        <li><strong><code>className</code>, not <code>class</code>.</strong> <code>class</code> is a reserved word in JavaScript, so JSX uses <code>className</code>. Similarly <code>htmlFor</code> instead of <code>for</code>.</li>
+        <li><strong>camelCase attributes.</strong> <code>onClick</code>, <code>onChange</code>, <code>tabIndex</code> — not <code>onclick</code>.</li>
+        <li><strong><code>{}</code> holds an expression, not a statement.</strong> <code>{2 + 2}</code> works; <code>{if (x) {}}</code> does not — use a ternary or <code>&amp;&amp;</code>.</li>
+        <li><strong>Tags must close.</strong> <code>&lt;input /&gt;</code>, <code>&lt;br /&gt;</code> — self-closing is mandatory.</li>
+      </ul>
+
+      <h3>Core React concepts</h3>
+      <div class="defs">
+
+        <div class="def">
+          <div class="term">Component</div>
+          <div class="what">
+            <p>A reusable, self-contained function that returns JSX. It is the basic building block of a React UI — you compose a page out of components the way you compose a sentence out of words.</p>
+            <p>Components must be <strong>PascalCase</strong> (<code>Login</code>, <code>Navbar</code>). This is not style — it is how the JSX compiler tells your component <code>&lt;Login /&gt;</code> apart from a real HTML tag <code>&lt;div /&gt;</code>. Lowercase names are always treated as HTML tags.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">Props</div>
+          <div class="what">
+            <p>Read-only inputs passed from a parent component to a child, written as attributes in JSX. They are <strong>immutable</strong> — a child must never modify its own props. This enforces one-way, top-down data flow, which is what makes React apps predictable.</p>
+            <p>In this project <code>children</code> is a prop: in <code>&lt;ProtectedRoute&gt;&lt;Home /&gt;&lt;/ProtectedRoute&gt;</code>, the <code>&lt;Home /&gt;</code> element arrives inside the <code>ProtectedRoute</code> function as <code>props.children</code>.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">State</div>
+          <div class="what">
+            <p>Data owned and managed by a component that can change over time. When state changes, React re-renders that component and its children. State is <strong>local and private</strong> — unlike props, which come from outside.</p>
+            <p>State must be updated <strong>immutably</strong>: you never write <code>credentials.email = x</code>, you create a new object with the change. React compares references to decide whether to re-render, so mutating in place would be invisible to it.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">Hook</div>
+          <div class="what">
+            <p>A function whose name starts with <code>use</code> that lets a function component tap into React features it otherwise has no access to — state, lifecycle, context.</p>
+            <p><strong>Two rules, non-negotiable:</strong> (1) only call hooks at the <em>top level</em> of a component — never inside loops, conditions, or nested functions; (2) only call them from React function components or from other custom hooks. React relies on call order to match hooks to their state, so a conditional hook would desynchronise everything after it.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">useState</div>
+          <div class="what">
+            <p>Declares a piece of state. Returns an array of two things: the current value and a setter function. <code>const [user, setUser] = useState(null)</code> — the argument is the initial value.</p>
+            <p>Calling the setter schedules a re-render. Updates are <strong>asynchronous and batched</strong> — the new value is not readable on the very next line, which is why you compute from the previous value rather than assuming it has changed.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">useEffect</div>
+          <div class="what">
+            <p>Runs <em>side effects</em> after render — things outside React's rendering job, like network requests, subscriptions, or manual DOM work.</p>
+            <p><code>useEffect(fn, deps)</code>. The dependency array controls when it re-runs: <code>[]</code> means run once after the first render (the mount); <code>[x]</code> means re-run whenever <code>x</code> changes; omitted entirely means run after every render. The function may return a <em>cleanup</em> function that runs before the next run or on unmount.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">useContext</div>
+          <div class="what">
+            <p>Reads the current value of a React Context from inside any descendant component, with no props passed through the middle. It subscribes the component to the context, so it re-renders whenever the context value changes.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">Context API</div>
+          <div class="what">
+            <p>React's built-in solution to <strong>prop drilling</strong> — the problem of passing a value through many intermediate components that do not themselves need it.</p>
+            <p>Three parts: <code>createContext()</code> creates the context object; <code>&lt;Context.Provider value={…}&gt;</code> makes a value available to everything nested inside it; <code>useContext(Context)</code> reads it.</p>
+            <p>It is used here for auth because five different components need the same <code>user</code> — <code>Navbar</code>, <code>ProtectedRoute</code>, <code>PublicRoute</code>, <code>Home</code>, and <code>Login</code>. Threading it through as props would mean passing it through components that have no interest in it.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">Controlled component</div>
+          <div class="what">
+            <p>A form element whose displayed value is driven by React state rather than by the DOM. You supply <code>value={state}</code> and <code>onChange={handler}</code>, so React becomes the single source of truth.</p>
+            <p>The alternative (uncontrolled) lets the DOM hold the value and you read it with a <code>ref</code>. Controlled is preferred here because it makes validation, resetting, and conditional enabling straightforward — every keystroke is already in state.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">Virtual DOM</div>
+          <div class="what">
+            <p>A lightweight in-memory JavaScript object tree that mirrors the real DOM. React renders to this tree first.</p>
+            <p>On a state change React builds a new tree, <strong>diffs</strong> it against the previous one (the process called <em>reconciliation</em>), and applies only the differences to the real DOM in a batch. Real DOM operations are expensive — this minimises how many happen.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">Declarative UI</div>
+          <div class="what">
+            <p>You describe <em>what</em> the UI should look like for a given state, and React works out <em>how</em> to get the DOM there. The mental model is <code>UI = f(state)</code>.</p>
+            <p>The alternative — imperative — means manually calling <code>document.createElement</code>, <code>appendChild</code>, and <code>removeChild</code> and keeping the DOM in sync by hand. That becomes unmanageable quickly, which is the honest answer to "why React and not plain JavaScript?"</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">Synthetic event</div>
+          <div class="what">
+            <p>React's cross-browser wrapper around the native browser event. Handlers like <code>onClick</code> and <code>onSubmit</code> receive a SyntheticEvent with a consistent API regardless of browser quirks.</p>
+            <p><code>e.preventDefault()</code> on it cancels the browser's default action — used in this project to stop a form from doing a native submission and reloading the whole page.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">Conditional rendering</div>
+          <div class="what">
+            <p>Deciding what to render based on state, using ordinary JavaScript. Three forms appear in this codebase: the <code>&amp;&amp;</code> operator (<code>{user &amp;&amp; &lt;button /&gt;}</code> — render only if truthy), the ternary (<code>cond ? a : b</code>), and an early return (<code>if (!user) return null</code>).</p>
+            <p>When the condition is <code>false</code>, <code>&amp;&amp;</code> evaluates to <code>false</code> and React renders nothing for it.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">Custom hook</div>
+          <div class="what">
+            <p>A function starting with <code>use</code> that calls one or more built-in hooks and packages the result into reusable logic. <code>useAuth</code> is one: <code>const useAuth = () =&gt; useContext(AuthContext)</code>.</p>
+            <p>Its value is encapsulation — components import <code>useAuth</code> rather than the raw context object, so the storage mechanism can change later without touching any consumer.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <h3>Platform concepts</h3>
+      <div class="defs">
+
+        <div class="def">
+          <div class="term">SPA</div>
+          <div class="what">
+            <p>Single Page Application. The server sends <em>one</em> HTML file; from then on all navigation happens in JavaScript without a full page reload. Only the parts of the DOM that changed are updated.</p>
+            <p>The benefit is speed and preserved state — a full reload would throw away all React state and re-download every asset.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">React Router</div>
+          <div class="what">
+            <p>The library that gives an SPA real URLs. <code>BrowserRouter</code> hooks into the browser's History API so the address bar updates and the back button works, even though no request is made to the server.</p>
+            <p><code>&lt;Routes&gt;</code> looks through its <code>&lt;Route&gt;</code> children and renders the <em>first</em> one whose <code>path</code> matches the current URL. <code>&lt;Link&gt;</code> renders an anchor tag but intercepts the click and calls <code>preventDefault</code> internally, so the browser never navigates.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">JWT</div>
+          <div class="what">
+            <p>JSON Web Token — a signed, compact string encoding claims about a user (here, their id). The server signs it with a secret; anyone can read it, but nobody can forge or alter it without the secret.</p>
+            <p>It makes auth <strong>stateless</strong>: the server keeps no session table. It verifies the signature on each request and trusts the payload.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">httpOnly cookie</div>
+          <div class="what">
+            <p>A cookie with the <code>httpOnly</code> flag set is inaccessible to JavaScript — <code>document.cookie</code> cannot see it. The browser attaches it automatically to every matching request.</p>
+            <p>This is the standard mitigation for token theft via XSS: even if an attacker injects a script, it cannot read the token. The trade-off, and the thing to say out loud in a viva, is that the frontend therefore <em>cannot know whether it is logged in</em> without asking the server — which is exactly why <code>AuthContext</code> calls <code>/me</code> on mount.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">CORS</div>
+          <div class="what">
+            <p>Cross-Origin Resource Sharing. Browsers block JavaScript from reading responses from a different origin by default. The server opts in with an <code>Access-Control-Allow-Origin</code> header.</p>
+            <p>Because the frontend is <code>localhost:5173</code> and the API is <code>localhost:3333</code>, these <em>are</em> different origins (an origin is scheme + host + <strong>port</strong>), so CORS applies. The backend allows exactly <code>http://localhost:5173</code> with <code>credentials: true</code> — and that combination matters, because <code>credentials: true</code> is illegal alongside a wildcard <code>*</code> origin. The frontend must mirror it with <code>withCredentials: true</code>. Both sides are required; it is a two-way agreement.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">Vite</div>
+          <div class="what">
+            <p>A build tool and dev server. In development it serves your source files as native ES modules over HTTP — no bundling step — which is why startup is near-instant. Its <strong>HMR</strong> (Hot Module Replacement) and React Fast Refresh swap a changed module into the running page without losing state.</p>
+            <p>For production, <code>vite build</code> bundles and minifies everything with Rollup.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">Tailwind CSS</div>
+          <div class="what">
+            <p>A utility-first CSS framework. Instead of writing named classes in a stylesheet, you compose small single-purpose utilities directly in the markup: <code>flex items-center px-6 py-4 bg-slate-900</code>.</p>
+            <p>These are not CSS variables or shortcuts — each is a real class. Version 4 is <strong>CSS-first</strong>: <code>@import "tailwindcss"</code> in the entry stylesheet plus the Vite plugin, with no <code>tailwind.config.js</code>. It scans your source files and generates only the utilities actually used.</p>
+          </div>
+        </div>
+
+        <div class="def">
+          <div class="term">StrictMode</div>
+          <div class="what">
+            <p>A development-only wrapper that deliberately double-invokes render functions and effects (mount → unmount → mount) to surface bugs from missing cleanup or impure code. It renders nothing visible and has no effect in production.</p>
+            <p>Practical consequence here: in dev you will see <strong>two</strong> <code>GET /customers/me</code> calls. That is expected, not a bug — and volunteering this is a strong answer if an examiner points at the network tab.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============ 3. FILES ============ -->
+    <section id="files">
+      <h2>3 · File-by-file breakdown</h2>
+      <p class="lede">What each file is, what it contains, and why it is written that way.</p>
+
+      <h3><code>index.html</code></h3>
+      <p><strong>What it is:</strong> the only HTML file in the project. Every SPA has exactly one.</p>
+      <ul>
+        <li><code>&lt;div id="root"&gt;&lt;/div&gt;</code> is the <strong>mount point</strong> — the empty container React will take over. It ships empty; every pixel on screen is created by JavaScript.</li>
+        <li><code>&lt;script type="module" src="/src/main.jsx"&gt;</code> loads the app. <code>type="module"</code> enables ES module syntax (<code>import</code>/<code>export</code>) in the browser.</li>
+        <li><code>&lt;link rel="icon"&gt;</code> points at the favicon in <code>public/</code>, which Vite serves from the root URL.</li>
+      </ul>
+      <div class="note warn">
+        <span class="note-tag">Bug</span>
+        <p>Line 6 reads <code>&lt;meta fullName="viewport" content="width=device-width, initial-scale=1.0" /&gt;</code>. It must be <code>name="viewport"</code>. The attribute is currently meaningless, so the viewport meta tag is inert and the layout will not scale correctly on mobile. It looks like a casualty of a careless find-and-replace.</p>
+      </div>
+
+      <h3><code>src/main.jsx</code></h3>
+      <p><strong>What it is:</strong> the JavaScript entry point — the first code that runs.</p>
+      <div class="code">
+        <div class="code-label">src/main.jsx</div>
+<pre><code>createRoot(document.getElementById('root')).render(
+  &lt;StrictMode&gt;
+    &lt;App /&gt;
+  &lt;/StrictMode&gt;,
+);</code></pre>
+      </div>
+      <ul>
+        <li><code>createRoot()</code> is the <strong>React 19 API</strong>. It takes a DOM node and returns a root object. In React 17 and earlier this was <code>ReactDOM.render()</code> — mentioning the change is a good sign of depth.</li>
+        <li><code>.render(&lt;App /&gt;)</code> mounts the component tree into <code>#root</code>. React takes ownership of that node from here on.</li>
+        <li><code>import './index.css'</code> pulls in the global stylesheet — this is what makes Tailwind available everywhere.</li>
+        <li><code>StrictMode</code> wraps the app for development checks only.</li>
+      </ul>
+
+      <h3><code>src/App.jsx</code></h3>
+      <p><strong>What it is:</strong> the composition root. It does not hold any logic of its own — it wires the providers, the router, and the routes together. This is the file to open when asked "how does the app fit together?"</p>
+      <div class="code">
+        <div class="code-label">src/App.jsx (structure)</div>
+<pre><code>&lt;AuthProvider&gt;          ← auth state available to everything below
+  &lt;Router&gt;              ← URL routing available to everything below
+    &lt;Navbar /&gt;          ← outside &lt;Routes&gt;, so it shows on every page
+    &lt;Routes&gt;
+      /register → &lt;PublicRoute&gt;   &lt;Register /&gt; &lt;/PublicRoute&gt;
+      /login    → &lt;PublicRoute&gt;   &lt;Login    /&gt; &lt;/PublicRoute&gt;
+      /home     → &lt;ProtectedRoute&gt;&lt;Home     /&gt; &lt;/ProtectedRoute&gt;
+      *         → &lt;Navigate to="/login" replace /&gt;
+    &lt;/Routes&gt;
+  &lt;/Router&gt;
+&lt;/AuthProvider&gt;</code></pre>
+      </div>
+      <p>Four things worth being able to justify:</p>
+      <ul>
+        <li><strong>The nesting order is deliberate.</strong> <code>AuthProvider</code> is outside <code>Router</code> so that every route can read auth state. The guards are inside <code>Router</code> because <code>&lt;Navigate&gt;</code> needs router context to work at all. Inverting these would throw.</li>
+        <li><strong><code>&lt;Navbar /&gt;</code> sits outside <code>&lt;Routes&gt;</code></strong>, so it renders on every page without repeating it in each route. It is still inside <code>Router</code>, which is what lets it use <code>useNavigate</code>.</li>
+        <li><strong><code>path="*"</code></strong> is the catch-all — any unmatched URL. It redirects to <code>/login</code>, so a typo or a stale bookmark lands somewhere sensible instead of on a blank page.</li>
+        <li><strong><code>replace</code></strong> on that <code>Navigate</code> replaces the current history entry rather than pushing a new one. Without it, hitting back would return you to the bad URL, which immediately redirects again — an inescapable back-button loop.</li>
+      </ul>
+
+      <h3><code>src/context/AuthContext.jsx</code></h3>
+      <p><strong>What it is:</strong> the most important file for the viva. It is the single source of truth for "who is logged in", and it owns the four operations the whole app depends on.</p>
+
+      <h4>State it holds</h4>
+      <ul>
+        <li><code>user</code> — the logged-in customer object, or <code>null</code>. Starts <code>null</code>.</li>
+        <li><code>loading</code> — starts <strong><code>true</code></strong>. This is deliberate and load-bearing; see the callout below.</li>
+      </ul>
+
+      <h4>The session-restore effect</h4>
+      <div class="code">
+        <div class="code-label">src/context/AuthContext.jsx</div>
+<pre><code>const fetchUser = async () =&gt; {
+  try {
+    const response = await api.get('/customers/me');
+    setUser(response.data?.customer || response.data?.user || response.data);
+  } catch (error) {
+    setUser(null);
+  } finally {
+    setLoading(false);          // runs whether it succeeded or failed
+  }
+};
+
+useEffect(() =&gt; {
+  fetchUser();
+}, []);                          // [] → run exactly once, after first render</code></pre>
+      </div>
+      <p>This is the mechanism that keeps you logged in across a page refresh. Because the JWT is in an httpOnly cookie, JavaScript cannot check it — so the app asks the server. On a hard refresh, React state is wiped, <code>user</code> goes back to <code>null</code>, and this effect re-establishes the session from the cookie.</p>
+      <p>The line <code>response.data?.customer || response.data?.user || response.data</code> is defensive. The <code>?</code> is <strong>optional chaining</strong>: if <code>response.data</code> is null or undefined, the whole expression short-circuits to <code>undefined</code> instead of throwing. The chain exists because the backend is inconsistent — <code>/login</code> returns <code>{ message, customer }</code> while <code>/me</code> returns the raw user object. The fallbacks let one function handle both shapes.</p>
+
+      <h4>The three operations it exposes</h4>
+      <div class="defs">
+        <div class="def">
+          <div class="term">login(credentials)</div>
+          <div class="what"><p>POSTs to <code>/customers/login</code>, then immediately calls <code>fetchUser()</code>. The login response already contains the customer, but re-fetching from <code>/me</code> means there is exactly one code path that sets <code>user</code> — one source of truth. If the POST fails it throws, and the caller (<code>Login.jsx</code>) catches it.</p></div>
+        </div>
+        <div class="def">
+          <div class="term">logout()</div>
+          <div class="what"><p>POSTs to <code>/customers/logout</code> to have the server clear the cookie, and clears local state in a <code>finally</code> block — so the UI logs out even if the request fails. That <code>finally</code> is a deliberate robustness choice worth pointing out.</p></div>
+        </div>
+        <div class="def">
+          <div class="term">user, setUser, loading</div>
+          <div class="what"><p>Passed through the context value so consumers can read state directly. <code>setUser</code> is exposed but no component currently calls it — a small inconsistency you can acknowledge if asked.</p></div>
+        </div>
+      </div>
+
+      <div class="code">
+        <div class="code-label">The provider and the consumer hook</div>
+<pre><code>&lt;AuthContext.Provider value={{ user, setUser, loading, login, logout }}&gt;
+  {children}
+&lt;/AuthContext.Provider&gt;
+
+export const useAuth = () =&gt; useContext(AuthContext);</code></pre>
+      </div>
+      <p><code>children</code> here is the entire rest of the app — everything inside <code>&lt;AuthProvider&gt;</code> in <code>App.jsx</code>. The provider simply broadcasts the value down to all of it.</p>
+
+      <div class="note">
+        <span class="note-tag">Key point</span>
+        <p><strong>Why <code>loading</code> starts as <code>true</code>.</strong> On a refresh, there is a brief window where React has rendered but the <code>/me</code> request has not come back — so <code>user</code> is <code>null</code> even though the visitor has a perfectly valid cookie. If <code>loading</code> started as <code>false</code>, <code>ProtectedRoute</code> would see <code>!user</code> in that window and bounce a logged-in user to <code>/login</code>. The <code>loading</code> flag exists precisely to say "we don't know yet, don't decide." This is the single best answer you can give about this codebase.</p>
+      </div>
+
+      <h3><code>src/components/ProtectedRoute.jsx</code></h3>
+      <p><strong>What it is:</strong> a guard component. It wraps a page and decides whether that page is allowed to render.</p>
+      <div class="code">
+        <div class="code-label">src/components/ProtectedRoute.jsx</div>
+<pre><code>const ProtectedRoute = ({ children }) =&gt; {
+  const { user, loading } = useAuth();
+
+  if (loading) return &lt;div&gt;Loading...&lt;/div&gt;;
+  if (!user) return &lt;Navigate to="/login" replace /&gt;;
+
+  return children;
+};</code></pre>
+      </div>
+      <ul>
+        <li><code>{ children }</code> is <strong>destructuring props</strong> — it pulls <code>children</code> straight out of the props object.</li>
+        <li>The <code>loading</code> check comes <strong>first</strong>. Order matters: checking <code>!user</code> before <code>loading</code> is false would produce the redirect-flash bug described above.</li>
+        <li><code>&lt;Navigate&gt;</code> is React Router's declarative redirect. Rendering it navigates immediately. It is a component, not a function call — that is why it lives in the JSX return rather than in the body.</li>
+        <li><code>replace</code> prevents <code>/home</code> from being left in history, so the back button does not trap the user in a redirect loop.</li>
+        <li><code>return children</code> — the guard itself renders nothing; it passes the wrapped page through unchanged.</li>
+      </ul>
+      <p>This is the <strong>wrapper component</strong> pattern, sometimes called a layout route. It is preferred over duplicating the auth check inside every page because the rule lives in exactly one place.</p>
+
+      <h3><code>src/components/PublicRoute.jsx</code></h3>
+      <p><strong>What it is:</strong> the inverse guard — for pages that only make sense when logged <em>out</em>.</p>
+      <div class="code">
+        <div class="code-label">src/components/PublicRoute.jsx</div>
+<pre><code>if (loading) return &lt;div&gt;Loading...&lt;/div&gt;;
+if (user) return &lt;Navigate to="/home" replace /&gt;;
+
+return children;</code></pre>
+      </div>
+      <p>Same structure, opposite condition. It stops an already-logged-in user from landing on <code>/login</code> or <code>/register</code> — for example by pressing back after logging in, or typing the URL directly. They get sent to <code>/home</code> instead.</p>
+
+      <h3><code>src/components/Navbar.jsx</code></h3>
+      <p><strong>What it is:</strong> the fixed header — the app title, and a Logout button that only appears when someone is logged in.</p>
+      <div class="code">
+        <div class="code-label">src/components/Navbar.jsx</div>
+<pre><code>const { user, logout } = useAuth();
+const navigate = useNavigate();
+
+const handleLogout = async () =&gt; {
+  try {
+    await logout();
+    navigate('/login');
+  } catch (err) {
+    console.error('Logout error:', err);
+  }
+};
+
+return (
+  &lt;nav className="flex justify-between items-center px-6 py-4
+                  bg-slate-900 text-white shadow-md"&gt;
+    &lt;h1 className="text-xl font-bold tracking-tight"&gt;ShopKart&lt;/h1&gt;
+    {user &amp;&amp; (
+      &lt;button onClick={handleLogout} className="bg-red-600 ..."&gt;Logout&lt;/button&gt;
+    )}
+  &lt;/nav&gt;
+);</code></pre>
+      </div>
+      <ul>
+        <li><code>useNavigate()</code> returns a function for <strong>programmatic navigation</strong> — moving the user in response to logic rather than a click on a link. <code>&lt;Link&gt;</code> cannot be used here because the navigation must happen only <em>after</em> the logout request resolves.</li>
+        <li><code>{user &amp;&amp; (&lt;button&gt;…)}</code> — conditional rendering. When <code>user</code> is null the expression is <code>false</code> and React renders nothing.</li>
+        <li>The logout sequence is ordered: clear the server session first, then navigate. Navigating first would briefly show <code>/login</code> while <code>user</code> is still set, which <code>PublicRoute</code> would immediately bounce back to <code>/home</code>.</li>
+        <li>The Tailwind classes: <code>flex justify-between</code> pushes the title and button to opposite ends; <code>px-6 py-4</code> is horizontal and vertical padding; <code>bg-slate-900</code> is the dark background.</li>
+      </ul>
+
+      <h3><code>src/pages/Login.jsx</code></h3>
+      <p><strong>What it is:</strong> the sign-in form. It demonstrates the controlled-component pattern end to end.</p>
+      <div class="code">
+        <div class="code-label">src/pages/Login.jsx — state and handler</div>
+<pre><code>const [credentials, setCredentials] = useState({ email: '', password: '' });
+const [error, setError] = useState('');
+
+const handleChange = (e) =&gt; {
+  setCredentials({ ...credentials, [e.target.name]: e.target.value });
+};
+
+const handleSubmit = async (e) =&gt; {
+  e.preventDefault();
+  setError('');
+
+  try {
+    await login(credentials);
+    navigate('/home');
+  } catch (err) {
+    setError('Invalid Credentials');
+  }
+};</code></pre>
+      </div>
+      <p>There is real substance in <code>handleChange</code>, and it is a favourite exam question. It uses two ES6 features at once:</p>
+      <ul>
+        <li><code>...credentials</code> — the <strong>spread operator</strong>. It copies every existing field into a new object. This is what makes the update <em>immutable</em>, which React requires.</li>
+        <li><code>[e.target.name]</code> — a <strong>computed property name</strong>. The brackets mean "use the <em>value</em> of this expression as the key," not the literal string. Since each input has a <code>name</code> attribute matching a state field, one handler serves every input on the form.</li>
+      </ul>
+      <p>Each input is wired as a <strong>controlled component</strong>: <code>value={credentials.email}</code> displays the state, and <code>onChange={handleChange}</code> writes back to it. State is the single source of truth, so clearing or validating the form is trivial.</p>
+      <p><code>e.preventDefault()</code> is essential. Without it the browser performs its native form submission — a full page load to the same URL — which would destroy the entire React app and its state. It is the difference between a working SPA and one that reloads on every submit.</p>
+      <p>The <code>error</code> state drives a conditional banner: <code>{error &amp;&amp; &lt;div className="…red…"&gt;{error}&lt;/div&gt;}</code>, and <code>setError('')</code> at the top of the handler clears any previous message before each attempt.</p>
+      <p>Finally, <code>&lt;Link to="/register"&gt;</code> at the bottom moves to the sign-up page <em>without</em> a reload, and Tailwind's <code>hover:underline</code> adds the underline on hover via a pseudo-class variant.</p>
+      <div class="note warn">
+        <span class="note-tag">Weakness</span>
+        <p>The <code>catch</code> always reports "Invalid Credentials" — including for a 500 error, a network failure, or the server being down. <code>Register.jsx</code> does this better by reading <code>err.response?.data?.message</code>. Being able to point at that difference yourself is better than having it pointed out to you.</p>
+      </div>
+
+      <h3><code>src/pages/Register.jsx</code></h3>
+      <p><strong>What it is:</strong> the sign-up form — structurally the same controlled pattern as Login, with four fields instead of two, plus two differences worth naming.</p>
+      <ul>
+        <li><strong>Client-side validation before the request.</strong> It checks all four fields are non-empty and sets an error immediately, saving a pointless round trip. Real validation still happens on the server — client validation is for user experience, never for security, because anyone can bypass it.</li>
+        <li><strong>It calls <code>api</code> directly rather than going through context.</strong> Registration does not change global auth state, so there is no reason to route it through <code>AuthContext</code>. Matching the tool to the job is the right instinct.</li>
+      </ul>
+      <div class="code">
+        <div class="code-label">src/pages/Register.jsx — submit and error handling</div>
+<pre><code>try {
+  await api.post('/customers/register', formData);
+  navigate('/login');
+} catch (err) {
+  setError(err.response?.data?.message || 'Registration failed. Try again.');
+}</code></pre>
+      </div>
+      <p>The error line is worth understanding in full. <code>err.response?.data?.message</code> uses optional chaining to safely reach the message, because a network failure has no <code>response</code> at all and would otherwise throw a second error inside the catch block. The <code>||</code> supplies a fallback for that case. This surfaces the backend's real message — "Email must be unique" or "Password too short" — instead of a generic one.</p>
+      <p>On success it navigates to <code>/login</code> rather than straight to <code>/home</code>. That is a deliberate product decision: the user proves the credentials they just chose actually work, rather than being silently logged in. Either choice is defensible — just have a reason.</p>
+      <div class="note">
+        <span class="note-tag">Detail</span>
+        <p>The field is named <code>fullName</code>, not <code>name</code>, in both the state object and the <code>name</code> attribute. This is not arbitrary — it matches the backend's <code>req.body</code> destructuring exactly. Renaming it in the frontend would silently break registration.</p>
+      </div>
+
+      <h3><code>src/pages/Home.jsx</code></h3>
+      <p><strong>What it is:</strong> the protected page — a read-only profile view, and the proof that the whole auth chain works.</p>
+      <div class="code">
+        <div class="code-label">src/pages/Home.jsx</div>
+<pre><code>const { user } = useAuth();
+
+if (!user) return null;
+
+return (
+  &lt;div&gt;
+    &lt;h2&gt;Welcome back, {user.name}!&lt;/h2&gt;
+    &lt;p&gt;Full Name: {user.name}&lt;/p&gt;
+    &lt;p&gt;Email: {user.email}&lt;/p&gt;
+    &lt;p&gt;Phone: {user.phone}&lt;/p&gt;
+  &lt;/div&gt;
+);</code></pre>
+      </div>
+      <p><code>{user.name}</code> is <strong>JSX interpolation</strong> — a JavaScript expression inside braces, evaluated and rendered as text.</p>
+      <div class="note warn">
+        <span class="note-tag">Bug</span>
+        <p><strong><code>user.name</code> does not exist.</strong> The Mongoose schema defines the field as <code>fullName</code>, so <code>user.name</code> is <code>undefined</code>. The page currently renders "Welcome back, !" and a blank Full Name row, while Email and Phone work correctly. The fix is <code>user.fullName</code> on both lines. Know this one — it is exactly the kind of thing an examiner spots on screen and asks you to explain. Owning it and describing the fix is a much better look than being caught by it.</p>
+      </div>
+      <p>The <code>if (!user) return null</code> guard is technically redundant — <code>ProtectedRoute</code> already guarantees a user. It is harmless defensive coding, and the honest answer is that it protects against the brief moment during navigation when context may not yet be populated. On its own, the early <code>return null</code> pattern is a clean way to skip rendering when preconditions are not met.</p>
+
+      <h3><code>src/axiosCalls/axios.js</code></h3>
+      <p><strong>What it is:</strong> four lines, and one of the most consequential files in the project.</p>
+      <div class="code">
+        <div class="code-label">src/axiosCalls/axios.js</div>
+<pre><code>const api = axios.create({
+  baseURL: "http://localhost:3333",
+  withCredentials: true,
+});</code></pre>
+      </div>
+      <ul>
+        <li><code>axios.create()</code> builds a <strong>preconfigured instance</strong>. Every call made through <code>api</code> inherits these settings. The alternative — repeating the full URL and options on every request — is error-prone and painful to change. If the backend moved, this is the one line you would edit.</li>
+        <li><code>baseURL</code> is why the rest of the app writes <code>api.get('/customers/me')</code> instead of the full address.</li>
+        <li><code>withCredentials: true</code> is <strong>essential and easy to miss</strong>. By default, browsers do not send or store cookies on cross-origin requests. Without this flag the httpOnly <code>token</code> cookie is never attached, so every request to <code>/me</code> returns 401 and the user appears permanently logged out — even though login itself "succeeded". It must be paired with <code>credentials: true</code> in the backend's CORS config. A mismatch on either side produces exactly the same silent failure.</li>
+      </ul>
+
+      <h3><code>vite.config.js</code> and <code>index.css</code></h3>
+      <div class="code">
+        <div class="code-label">vite.config.js</div>
+<pre><code>export default defineConfig({
+  plugins: [react(), tailwindcss()]
+})</code></pre>
+      </div>
+      <p>Two plugins. <code>react()</code> compiles JSX and provides Fast Refresh. <code>tailwindcss()</code> is the Tailwind v4 Vite integration — it scans source files for class names and generates the matching CSS. There is no <code>tailwind.config.js</code> in this project, which is the v4 difference: configuration is done in CSS now.</p>
+      <div class="code">
+        <div class="code-label">src/index.css — the entire file</div>
+<pre><code>@import "tailwindcss"</code></pre>
+      </div>
+      <p>One line. This import is what injects Tailwind's base styles and all generated utilities into the app. It is imported once, in <code>main.jsx</code>.</p>
+
+      <h3><code>package.json</code> — the scripts</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Script</th><th>Command</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>dev</code></td><td><code>vite</code></td><td>Dev server on port 5173 with hot reload. This is what you run.</td></tr>
+            <tr><td><code>build</code></td><td><code>vite build</code></td><td>Production bundle into <code>dist/</code>.</td></tr>
+            <tr><td><code>preview</code></td><td><code>vite preview</code></td><td>Serves the built output locally, to verify the production bundle.</td></tr>
+            <tr><td><code>lint</code></td><td><code>eslint .</code></td><td>Static analysis, including the React Hooks rules.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><code>"type": "module"</code> enables ES module syntax throughout the project, and <code>"private": true</code> prevents accidental publication to npm.</p>
+    </section>
+
+    <!-- ============ 4. FLOWS ============ -->
+    <section id="flows">
+      <h2>4 · End-to-end workflows</h2>
+      <p class="lede">The four sequences you should be able to narrate from memory, in order. If you can walk an examiner through these, you have passed.</p>
+
+      <h3>Flow A — App boot and session restore</h3>
+      <p>This is the one that runs on every refresh, and the one that reveals whether you understand the architecture.</p>
+      <ol class="steps">
+        <li><p>The browser loads <code>index.html</code>. <code>&lt;div id="root"&gt;</code> is empty — the page is blank white.</p></li>
+        <li><p><code>main.jsx</code> executes. <code>createRoot()</code> targets <code>#root</code> and <code>.render()</code> mounts the tree.</p></li>
+        <li><p><code>AuthProvider</code> initialises: <code>user = null</code>, <code>loading = true</code>.</p></li>
+        <li><p><code>Router</code>, <code>Navbar</code>, and <code>Routes</code> render. First paint happens here — the Loading state.</p></li>
+        <li><p>After that first render, the <code>useEffect</code> fires and calls <code>fetchUser()</code>, which sends <code>GET /customers/me</code>.</p></li>
+        <li><p>The browser automatically attaches the httpOnly <code>token</code> cookie — JavaScript never touches it.</p></li>
+        <li><p>On the server, <code>isAuthenticated</code> reads <code>req.cookies.token</code>, verifies the JWT signature with the secret, looks the user up by the id in the payload, attaches it as <code>req.user</code>, and calls <code>next()</code>.</p></li>
+        <li><p>The controller responds with the user object. <code>setUser(data)</code> stores it; the <code>finally</code> block sets <code>loading = false</code>.</p></li>
+        <li><p>React re-renders. The guards now have their answer.</p></li>
+        <li><p>On <code>/home</code>: <code>loading</code> is false and <code>user</code> exists, so <code>ProtectedRoute</code> renders <code>Home</code>. If the cookie was missing or expired the server returned 401, <code>user</code> stays null, and <code>&lt;Navigate to="/login"&gt;</code> takes over.</p></li>
+      </ol>
+      <div class="note ok">
+        <span class="note-tag">The point</span>
+        <p>Step 4 renders <em>before</em> step 8 can possibly finish. That gap is the entire reason <code>loading</code> exists. Explain that gap and you have explained the design.</p>
+      </div>
+
+      <h3>Flow B — Register a new account</h3>
+      <ol class="steps">
+        <li><p>The user types into any of the four inputs. Each keystroke fires <code>onChange</code> → <code>handleChange</code> → <code>setFormData</code> with a spread copy and a computed key → re-render with the new value shown. The DOM is never the source of truth.</p></li>
+        <li><p>The user submits. React calls <code>handleSubmit</code>, and <code>e.preventDefault()</code> cancels the browser's native form submission — no page reload.</p></li>
+        <li><p>Client-side check: any empty field sets an error message and returns early. No request is sent.</p></li>
+        <li><p><code>api.post('/customers/register', formData)</code> sends the JSON body.</p></li>
+        <li><p>Backend: validates all fields are present; queries for an existing email and returns 409 if found; checks the password is at least 6 characters; hashes it with <strong>bcrypt</strong> at cost factor 10; creates the user; strips the password from the response.</p></li>
+        <li><p>On 200, <code>navigate('/login')</code> moves to the sign-in page.</p></li>
+        <li><p>On error, <code>err.response?.data?.message</code> is displayed — the server's own wording, with a generic fallback for network failures.</p></li>
+      </ol>
+
+      <h3>Flow C — Login</h3>
+      <ol class="steps">
+        <li><p>Controlled inputs capture email and password into <code>credentials</code> state.</p></li>
+        <li><p><code>handleSubmit</code> clears any old error, calls <code>e.preventDefault()</code>, then <code>await login(credentials)</code> — the context function, not axios directly.</p></li>
+        <li><p><code>AuthContext.login</code> POSTs to <code>/customers/login</code>.</p></li>
+        <li><p>Backend: finds the user by email (401 if absent), compares the password with <code>bcrypt.compareSync</code> (401 if wrong), signs a JWT containing the user id, and sets it as an <code>httpOnly</code> cookie on the response.</p></li>
+        <li><p>The browser stores the cookie — this only happens because <code>withCredentials: true</code> is set on the axios instance and the backend's CORS allows credentials from this origin. Both must line up.</p></li>
+        <li><p><code>login()</code> then awaits <code>fetchUser()</code>, which calls <code>/me</code> — now succeeding, since the cookie is in place — and sets <code>user</code>.</p></li>
+        <li><p><code>navigate('/home')</code> runs only after both awaits resolve.</p></li>
+        <li><p><code>Routes</code> matches <code>/home</code>; <code>ProtectedRoute</code> sees a user and renders <code>Home</code>. Meanwhile <code>Navbar</code> re-renders and the Logout button appears.</p></li>
+        <li><p>If any step threw, the <code>catch</code> sets "Invalid Credentials" and the user stays on the form.</p></li>
+      </ol>
+
+      <h3>Flow D — Logout</h3>
+      <ol class="steps">
+        <li><p>The user clicks Logout in <code>Navbar</code>, firing <code>handleLogout</code>.</p></li>
+        <li><p><code>await logout()</code> → <code>POST /customers/logout</code>, with the cookie attached. The route is behind <code>isAuthenticated</code>, so the token is verified first.</p></li>
+        <li><p>The backend responds with <code>res.clearCookie('token')</code>, instructing the browser to drop it.</p></li>
+        <li><p>The <code>finally</code> block sets <code>user = null</code> regardless of whether the request succeeded — local state and server state are cleared independently.</p></li>
+        <li><p><code>navigate('/login')</code> runs. <code>PublicRoute</code> sees no user and renders the login page. <code>Navbar</code>'s <code>{user &amp;&amp; …}</code> now evaluates false and the button disappears.</p></li>
+      </ol>
+
+      <h3>The guard decision, at a glance</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>loading</th><th>user</th><th>ProtectedRoute</th><th>PublicRoute</th></tr></thead>
+          <tbody>
+            <tr><td><code>true</code></td><td>—</td><td>Show "Loading..."</td><td>Show "Loading..."</td></tr>
+            <tr><td><code>false</code></td><td>set</td><td>Render the page</td><td>Redirect to <code>/home</code></td></tr>
+            <tr><td><code>false</code></td><td><code>null</code></td><td>Redirect to <code>/login</code></td><td>Render the page</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Two guard components, four possible outcomes, and the <code>loading</code> row is the one that makes the whole thing work correctly on refresh.</p>
+
+      <h3>The API contract</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Frontend call</th><th>Backend route</th><th>Auth?</th><th>Response</th></tr></thead>
+          <tbody>
+            <tr><td><code>api.post('/customers/register')</code></td><td><code>POST /customers/register</code></td><td>No</td><td>200 <code>{ success, message, customer }</code> · 400 · 409</td></tr>
+            <tr><td><code>api.post('/customers/login')</code></td><td><code>POST /customers/login</code></td><td>No</td><td>200 <code>{ message, customer }</code> + sets cookie · 401</td></tr>
+            <tr><td><code>api.get('/customers/me')</code></td><td><code>GET /customers/me</code></td><td>Yes</td><td>200 raw user object · 401</td></tr>
+            <tr><td><code>api.post('/customers/logout')</code></td><td><code>POST /customers/logout</code></td><td>Yes</td><td>200 <code>{ success, message }</code>, clears cookie</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Note the inconsistency the frontend has to absorb: <code>/login</code> wraps the user in a <code>customer</code> key, but <code>/me</code> returns the bare object. That is why <code>AuthContext</code> has its three-way fallback chain rather than a single direct assignment.</p>
+    </section>
+
+    <!-- ============ 5. GOTCHAS ============ -->
+    <section id="gotchas">
+      <h2>5 · Weak points &amp; bugs</h2>
+      <p class="lede">Know these before the examiner finds them. Voluntarily naming a flaw and its fix reads as understanding; being caught by one does not.</p>
+
+      <div class="note warn">
+        <span class="note-tag">Real bug · high priority</span>
+        <p><strong><code>user.name</code> is always undefined.</strong> <code>Home.jsx</code> lines 11 and 13 read <code>user.name</code>, but the backend schema field is <code>fullName</code>. The welcome heading renders "Welcome back, !" with the name missing. Fix: <code>user.fullName</code>. This is visible on screen, so it is the most likely thing to be spotted.</p>
+      </div>
+
+      <div class="note warn">
+        <span class="note-tag">Real bug</span>
+        <p><strong><code>fullName="viewport"</code> in <code>index.html</code>.</strong> Should be <code>name="viewport"</code>. The meta tag is inert, so responsive breakpoints will not behave correctly on an actual phone. Another artifact of a global find-and-replace that was not scoped to the right file.</p>
+      </div>
+
+      <div class="defs">
+        <div class="def">
+          <div class="term">Error swallowing</div>
+          <div class="what"><p><code>AuthContext.fetchUser</code> catches every error and calls <code>setUser(null)</code>. A network failure or a server that is simply down is therefore indistinguishable from "not logged in" — the user gets bounced to the login page rather than being told something is broken. Distinguishing <code>err.response?.status === 401</code> from the absence of a <code>response</code> would fix it.</p></div>
+        </div>
+        <div class="def">
+          <div class="term">Generic login error</div>
+          <div class="what"><p><code>Login.jsx</code> hardcodes "Invalid Credentials" in its catch, so a 500 or a dead server reports the same thing as a wrong password. <code>Register.jsx</code> already does this correctly — the two files are simply inconsistent.</p></div>
+        </div>
+        <div class="def">
+          <div class="term">Logout needs auth</div>
+          <div class="what"><p><code>POST /customers/logout</code> sits behind <code>isAuthenticated</code>. If the cookie has already expired, logout returns 401. The frontend survives this because <code>finally</code> clears local state anyway — but the <code>catch</code> will log an error in the console that looks alarming and is not.</p></div>
+        </div>
+        <div class="def">
+          <div class="term">Cookie flags</div>
+          <div class="what"><p>The backend sets <code>{ httpOnly: true }</code> only — no <code>sameSite</code>, no <code>secure</code>. This works on localhost because ports are not part of "same site", so 5173 → 3333 is same-site and the default <code>SameSite=Lax</code> permits it. In production, where the frontend and API are usually on genuinely different domains, you would need <code>sameSite: 'none'</code> together with <code>secure: true</code> and HTTPS. Knowing this is a strong answer.</p></div>
+        </div>
+        <div class="def">
+          <div class="term">No token expiry handling</div>
+          <div class="what"><p>There is no refresh flow and no explicit expiry handling. When the JWT expires, <code>/me</code> returns 401 and the app simply treats the user as logged out. Acceptable for a lab project; worth naming as a limitation rather than being surprised by it.</p></div>
+        </div>
+        <div class="def">
+          <div class="term">setUser exposed but unused</div>
+          <div class="what"><p><code>setUser</code> is passed through the context value but no consumer calls it. Minor, but it is the kind of loose end that invites "why is this here?"</p></div>
+        </div>
+        <div class="def">
+          <div class="term">Loading state duplication</div>
+          <div class="what"><p>Both guards render the literal string "Loading..." with no styling, and there is no loading indicator anywhere else. Purely cosmetic, but a spinner or skeleton would be the production answer.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 6. QA ============ -->
+    <section id="qa">
+      <h2>6 · Rapid-fire questions</h2>
+      <p class="lede">Click a question to reveal the answer. Try answering aloud first.</p>
+
+      <div class="qa">
+        <details>
+          <summary>What is JSX and why use it instead of plain JavaScript?</summary>
+          <div class="answer"><p>JSX is a syntax extension that lets you write HTML-like markup inside JavaScript. It is not valid JS — the build tool compiles it into <code>jsx()</code> calls that produce plain objects called React elements. We use it over raw <code>React.createElement</code> because it is far more readable, it keeps the full power of JavaScript (expressions, <code>map</code>, ternaries) rather than being a limited template language, it catches malformed markup at compile time, and React escapes interpolated values so it is XSS-safe by default.</p></div>
+        </details>
+
+        <details>
+          <summary>Why <code>className</code> and not <code>class</code>?</summary>
+          <div class="answer"><p>Because JSX is JavaScript, and <code>class</code> is a reserved keyword in JavaScript (used for class declarations). Using it as an attribute name would be a syntax error, so React uses <code>className</code>. The same logic explains <code>htmlFor</code> instead of <code>for</code>.</p></div>
+        </details>
+
+        <details>
+          <summary>What is the virtual DOM and why does React use it?</summary>
+          <div class="answer"><p>An in-memory JavaScript object tree mirroring the real DOM. When state changes React builds a new tree, diffs it against the previous one (reconciliation), and applies only the differences to the real DOM. Real DOM operations are expensive, so this minimises how many happen and batches them.</p></div>
+        </details>
+
+        <details>
+          <summary>Difference between props and state?</summary>
+          <div class="answer"><p>Props are passed in from a parent and are read-only — a component must never modify its own props. State is owned and managed inside the component, and changing it triggers a re-render. Props flow one way, top-down; state is private to the component that declares it.</p></div>
+        </details>
+
+        <details>
+          <summary>What does the <code>[]</code> in <code>useEffect(fn, [])</code> mean?</summary>
+          <div class="answer"><p>An empty dependency array means the effect runs exactly once, after the first render (on mount), and never again. Adding a value to the array makes it re-run whenever that value changes. Omitting the array entirely makes it run after every render. Here it fetches the user once on startup.</p></div>
+        </details>
+
+        <details>
+          <summary>Why is there a <code>loading</code> flag at all?</summary>
+          <div class="answer"><p>Because the JWT is in an httpOnly cookie that JavaScript cannot read, the app cannot know whether it is logged in until <code>/me</code> responds. On a refresh there is a window where <code>user</code> is still <code>null</code> despite a valid session. Without <code>loading</code>, <code>ProtectedRoute</code> would redirect a logged-in user to <code>/login</code> during that window. <code>loading</code> starting as <code>true</code> means "we don't know yet — don't decide."</p></div>
+        </details>
+
+        <details>
+          <summary>Why is the token stored in an httpOnly cookie rather than localStorage?</summary>
+          <div class="answer"><p>Any script running on the page can read localStorage, so an XSS attack can steal the token outright. An httpOnly cookie is invisible to JavaScript — the browser attaches it automatically — so injected scripts cannot exfiltrate it. The trade-off is that the frontend cannot inspect it, which is why the app must call <code>/me</code> to learn its own auth state.</p></div>
+        </details>
+
+        <details>
+          <summary>What does <code>withCredentials: true</code> do?</summary>
+          <div class="answer"><p>It tells the browser to send and store cookies on cross-origin requests, which it refuses to do by default. Without it, the httpOnly <code>token</code> cookie is never attached to requests to the API, so <code>/me</code> always returns 401 and the user appears logged out even though login returned 200. It must be matched by <code>credentials: true</code> in the backend's CORS config — both sides are required.</p></div>
+        </details>
+
+        <details>
+          <summary>Why call <code>e.preventDefault()</code> in the submit handler?</summary>
+          <div class="answer"><p>By default a form submission performs a native browser navigation — a full page load. In an SPA that would destroy the entire React tree and all its state. <code>preventDefault()</code> cancels the browser's default action so the JavaScript handler can take over entirely.</p></div>
+        </details>
+
+        <details>
+          <summary>Explain <code>{ ...credentials, [e.target.name]: e.target.value }</code>.</summary>
+          <div class="answer"><p>The spread operator copies every existing field into a new object, which keeps the update immutable — React compares references, so mutating in place would not trigger a re-render. The bracketed key is a computed property name: it uses the <em>value</em> of <code>e.target.name</code> as the key rather than the literal string. Because each input's <code>name</code> attribute matches a state field, one handler serves the whole form.</p></div>
+        </details>
+
+        <details>
+          <summary>Why does <code>AuthProvider</code> wrap <code>Router</code> and not the other way round?</summary>
+          <div class="answer"><p>Every route needs to read auth state, so the provider has to be an ancestor of all of them. The guards use <code>&lt;Navigate&gt;</code>, which requires router context, so they must be inside <code>Router</code>. Putting the provider outside the router satisfies both — and inverting the order would break <code>useAuth</code> in <code>ProtectedRoute</code>.</p></div>
+        </details>
+
+        <details>
+          <summary>Why <code>replace</code> on the <code>&lt;Navigate&gt;</code> components?</summary>
+          <div class="answer"><p>It replaces the current history entry instead of pushing a new one. Without it, an unauthorised visit to <code>/home</code> would push <code>/login</code> on top of <code>/home</code>; pressing back would return to <code>/home</code>, which would immediately redirect to <code>/login</code> again — the user could never leave. <code>replace</code> keeps the history clean.</p></div>
+        </details>
+
+        <details>
+          <summary>What is a controlled component? Give an example from this code.</summary>
+          <div class="answer"><p>A form element whose value is driven by React state via <code>value</code> and <code>onChange</code>, making React the single source of truth rather than the DOM. Every input in <code>Login.jsx</code> and <code>Register.jsx</code> is controlled — <code>value={credentials.email}</code> with <code>onChange={handleChange}</code>.</p></div>
+        </details>
+
+        <details>
+          <summary>Why does the network tab show two <code>/me</code> requests in development?</summary>
+          <div class="answer"><p><code>StrictMode</code> deliberately mounts, unmounts, and remounts components in development to expose missing cleanup functions and impure code. The effect runs twice as a result. It has no effect in the production build — it is not a bug.</p></div>
+        </details>
+
+        <details>
+          <summary>Why is <code>Navbar</code> outside <code>&lt;Routes&gt;</code>?</summary>
+          <div class="answer"><p>So it renders once and persists across every route, instead of being repeated inside each route's element. It is still inside <code>Router</code>, which is what allows <code>useNavigate</code> to work — but being outside <code>Routes</code> means it must tolerate <code>user</code> being null on its own, which it does with <code>{user &amp;&amp; …}</code>.</p></div>
+        </details>
+
+        <details>
+          <summary>Why does <code>Register.jsx</code> navigate to <code>/login</code> instead of <code>/home</code>?</summary>
+          <div class="answer"><p>So the user explicitly proves the credentials they just created actually work. It is a product decision, not a technical constraint — auto-login after registration would also be valid, and the backend already returns the created customer either way.</p></div>
+        </details>
+
+        <details>
+          <summary>What does <code>err.response?.data?.message</code> do, and why the question marks?</summary>
+          <div class="answer"><p>Optional chaining: if any link in the chain is null or undefined, the whole expression short-circuits to <code>undefined</code> instead of throwing a TypeError. It matters here because a network failure produces an error with no <code>response</code> property at all — accessing <code>err.response.data</code> directly would throw a second error inside the catch block. The <code>||</code> then supplies a fallback message.</p></div>
+        </details>
+
+        <details>
+          <summary>Why is Tailwind used instead of plain CSS files?</summary>
+          <div class="answer"><p>It removes the naming problem (no inventing class names), keeps styles colocated with the markup they apply to, and ships only the utilities actually used, so the CSS never grows unbounded. The cost is verbose markup, which is the standard trade-off. In v4 there is no config file — <code>@import "tailwindcss"</code> plus the Vite plugin is the whole setup.</p></div>
+        </details>
+
+        <details>
+          <summary>Is client-side validation in <code>Register.jsx</code> enough?</summary>
+          <div class="answer"><p>No. It exists purely for user experience — to avoid a pointless round trip. Anyone can bypass it with dev tools or by calling the API directly, so the backend repeats every validation (required fields, unique email, minimum password length). Client-side validation is never a security control.</p></div>
+        </details>
+
+        <details>
+          <summary>Where would you add a new protected page, and what would you change?</summary>
+          <div class="answer"><p>Create the component in <code>src/pages/</code>, then add a <code>&lt;Route&gt;</code> in <code>App.jsx</code> with its <code>element</code> wrapped in <code>&lt;ProtectedRoute&gt;</code>. Nothing else changes — the guard, the context, and the axios instance are all already in place. That the change is one file is the payoff of the wrapper pattern.</p></div>
+        </details>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    Lab Project 4 · ShopKart · React 19 + Vite 8 + Tailwind 4 + React Router 7 + Axios
+  </footer>
+
+</div>
